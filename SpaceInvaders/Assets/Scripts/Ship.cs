@@ -35,17 +35,18 @@ public class Ship : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            Debug.Log("Fire! ");
-            /* we don’t want to spawn a Bullet inside our ship, so some
-            Simple trigonometry is done here to spawn the bullet
-            at the tip of where the ship is pointed.
-            */
             Vector3 spawnPos = gameObject.transform.position;
             spawnPos.z += (gameObject.transform.lossyScale.z / 2 + 0.1f);
             // instantiate the Bullet
             GameObject obj = Instantiate(bullet, spawnPos, Quaternion.identity) as GameObject;
-            // get the Bullet Script Component of the new Bullet instance
-            ShipBullet b = obj.GetComponent<ShipBullet>();
+            GameObject globalObj = GameObject.FindWithTag("Global");
+            for (int i = 0; i < globalObj.GetComponent<Global>().shields.Length; ++i)
+            {
+                if (globalObj.GetComponent<Global>().shields[i].GetComponent<Shield>().remainingHits == 0)
+                {
+                    Physics.IgnoreCollision(globalObj.GetComponent<Global>().shields[i].GetComponent<Collider>(), obj.GetComponent<Collider>());
+                }
+            }
         }
     }
 }

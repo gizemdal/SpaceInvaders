@@ -35,9 +35,13 @@ public class ShipBullet : MonoBehaviour
         Collider collider = collision.collider;
         if (collider.CompareTag("Alien"))
         {
-            Alien alien = collider.gameObject.GetComponent<Alien>();
             // Kill the alien
-            alien.Die();
+            collider.gameObject.GetComponent<Alien>().Die();
+            Destroy(gameObject);
+        }
+        else if (collider.CompareTag("Shield"))
+        {
+            collider.gameObject.GetComponent<Shield>().HitUpdate();
             Destroy(gameObject);
         }
     }

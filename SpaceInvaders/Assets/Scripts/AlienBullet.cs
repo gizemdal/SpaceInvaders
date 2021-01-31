@@ -32,13 +32,16 @@ public class AlienBullet : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         Collider collider = collision.collider;
-        if (collider.CompareTag("Alien"))
+        if (collider.CompareTag("Ship"))
         {
-            Physics.IgnoreCollision(GetComponent<Collider>(), collider);
-        }
-         else if (collider.CompareTag("Ship"))
+            // Subtract from remaining lives
+            Global.remainingLives--;
+            Debug.Log("Remaining lives: " + Global.remainingLives);
+            Destroy(gameObject);
+        } else if (collider.CompareTag("Shield"))
         {
-            Debug.Log("Hit the ship!");
+            collider.gameObject.GetComponent<Shield>().HitUpdate();
+            Destroy(gameObject);
         }
     }
 }
