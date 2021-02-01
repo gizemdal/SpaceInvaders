@@ -43,6 +43,17 @@ public class ShipBullet : MonoBehaviour
         {
             collider.gameObject.GetComponent<Shield>().HitUpdate();
             Destroy(gameObject);
+        } 
+        else if (collider.CompareTag("AlienBullet"))
+        {
+            // Destroy the bullet
+            Destroy(gameObject);
+        } 
+        else if (collider.CompareTag("UFO"))
+        {
+            // TODO: Give player points
+            // Kill the UFO
+            collider.gameObject.GetComponent<UFO>().Die();
         }
     }
 }

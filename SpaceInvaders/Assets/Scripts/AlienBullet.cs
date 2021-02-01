@@ -42,6 +42,14 @@ public class AlienBullet : MonoBehaviour
         {
             collider.gameObject.GetComponent<Shield>().HitUpdate();
             Destroy(gameObject);
+        } else if (collider.CompareTag("AlienBullet"))
+        {
+            // Destroy the bullet
+            Destroy(gameObject);
+        } else if (collider.CompareTag("ShipBullet"))
+        {
+            // Destroy the bullet
+            Destroy(gameObject);
         }
     }
 }
