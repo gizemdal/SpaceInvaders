@@ -6,9 +6,11 @@ public class UFO : MonoBehaviour
 {
     public float xSpeed; // speed of the UFO in x-direction
     public GameObject globalOBJ; // global game object
+    public int score; // score value
     // Start is called before the first frame update
     void Start()
     {
+        score = Random.Range(40, 51); // Randomize score
         xSpeed = 0.015f;
         globalOBJ = GameObject.FindWithTag("Global");
     }

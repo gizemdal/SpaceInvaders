@@ -5,16 +5,27 @@ using UnityEngine;
 public class Shield : MonoBehaviour
 {
     // Start is called before the first frame update
+    public static int idCount = 0; // each shield has a unique ID
+    public GameObject globalOBJ; // global game object
+    public int id;
     public int remainingHits = 5;
     void Start()
     {
-        
+        globalOBJ = GameObject.FindWithTag("Global");
+        id = idCount;
+        idCount++;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void Break()
+    {
+        globalOBJ.GetComponent<Global>().RemoveShield(this.id); // remove the shield with given id
+        Destroy(gameObject); // Break the shield
     }
 
     public void HitUpdate()
@@ -28,7 +39,7 @@ public class Shield : MonoBehaviour
         }
         if (remainingHits == 0)
         {
-            GetComponent<Renderer>().enabled = false;
+            Break();
         }
     }
 }
