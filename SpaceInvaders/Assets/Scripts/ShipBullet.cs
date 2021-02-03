@@ -6,12 +6,14 @@ public class ShipBullet : MonoBehaviour
 {
     public Vector3 thrust; // direction of movement
     public Quaternion heading;
+    public GameObject shipOBJ; // the ship game object
 
     // Start is called before the first frame update
     void Start()
     {
+        shipOBJ = GameObject.FindWithTag("Ship");
         // travel straight in the Z-axis
-        thrust.z = 400.0f;
+        thrust.z = shipOBJ.GetComponent<Ship>().bulletSpeed;
         heading.z = 1;
 
         // do not passively decelerate

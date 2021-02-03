@@ -34,9 +34,9 @@ public class AlienBullet : MonoBehaviour
         Collider collider = collision.collider;
         if (collider.CompareTag("Ship"))
         {
-            // Subtract from remaining lives
-            Global.remainingLives--;
-            Debug.Log("Remaining lives: " + Global.remainingLives);
+            // Kill the ship
+            collider.gameObject.GetComponent<Ship>().Kill();
+            //Debug.Log("Remaining lives: " + collider.gameObject.GetComponent<Ship>().remainingLives);
             Destroy(gameObject);
         } else if (collider.CompareTag("Shield"))
         {

@@ -18,14 +18,17 @@ public class UFO : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Check if UFO is outside the screen
-        Vector3 currentPos = gameObject.transform.position;
-        if (currentPos.x < -globalOBJ.GetComponent<Global>().maxPos.x)
+        if (Time.timeScale > 0)
         {
-            Die();
+            // Check if UFO is outside the screen
+            Vector3 currentPos = gameObject.transform.position;
+            if (currentPos.x < -globalOBJ.GetComponent<Global>().maxPos.x)
+            {
+                Die();
+            }
+            currentPos.x -= xSpeed;
+            gameObject.transform.position = currentPos;
         }
-        currentPos.x -= xSpeed;
-        gameObject.transform.position = currentPos;
     }
 
     public void Die()

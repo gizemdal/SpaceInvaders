@@ -28,33 +28,37 @@ public class Alien : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        Vector3 updatedPosition = gameObject.transform.position;
-        if (moveLeft)
+        if (Time.timeScale > 0)
         {
-            updatedPosition.x -= globalOBJ.GetComponent<Global>().alienSpeed.x;
-        } else
-        {
-            updatedPosition.x += globalOBJ.GetComponent<Global>().alienSpeed.x;
-        }
-        gameObject.transform.position = updatedPosition;
-        // Update the mesh
-        float deltaT = Time.deltaTime;
-        meshTimer -= deltaT;
-        if (meshTimer <= 0)
-        {
-            MeshFilter currentMesh = gameObject.GetComponent<MeshFilter>();
-            // Switch jelly mesh
-            if (initMesh)
+            Vector3 updatedPosition = gameObject.transform.position;
+            if (moveLeft)
             {
-                currentMesh.mesh = firstMesh;
-                initMesh = false;
+                updatedPosition.x -= globalOBJ.GetComponent<Global>().alienSpeed.x;
             }
             else
             {
-                currentMesh.sharedMesh = secondMesh;
-                initMesh = true;
+                updatedPosition.x += globalOBJ.GetComponent<Global>().alienSpeed.x;
             }
-            meshTimer = timer;
+            gameObject.transform.position = updatedPosition;
+            // Update the mesh
+            float deltaT = Time.deltaTime;
+            meshTimer -= deltaT;
+            if (meshTimer <= 0)
+            {
+                MeshFilter currentMesh = gameObject.GetComponent<MeshFilter>();
+                // Switch jelly mesh
+                if (initMesh)
+                {
+                    currentMesh.mesh = firstMesh;
+                    initMesh = false;
+                }
+                else
+                {
+                    currentMesh.sharedMesh = secondMesh;
+                    initMesh = true;
+                }
+                meshTimer = timer;
+            }
         }
     }
 

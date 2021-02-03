@@ -12,7 +12,6 @@ public class Global : MonoBehaviour
     public static int rowNum = 5; // number of rows for alien group
     public static float alienTimer = 1f; // timer for alien attack
     public static float UFOTimer = 10; // timer for UFO spawn
-    public static int remainingLives = 3; // total lives
     public static int playerScore = 0; // Keep track of player score
     public static bool isGameOver = false; // has the player lost all their lives?
     public static List<GameObject> aliens = new List<GameObject>();
@@ -31,11 +30,23 @@ public class Global : MonoBehaviour
     public GameObject ship; // ship game object
     public Vector2 maxPos; // maximum position an alien or the ship can take
     public bool maxZReached; // determine if the aliens need to go lower
+    public int closestRow = 0; // current closest alien row
+
+    static void ResetGameStats()
+    {
+        Global.numAliens = 55;
+        Global.numShields = 4;
+        Global.playerScore = 0; // Reset score
+        Alien.timer = 1;
+        Global.isGameOver = false;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         alienSpeed = new Vector2(0.01f, 0.075f); // initial speed
+        // Reset ship state
+        ship.GetComponent<Ship>().ResetState();
         // Create the aliens
         float z_coor = 1.2f;
         float x_coor = -7f;
@@ -97,23 +108,36 @@ public class Global : MonoBehaviour
 
     public void RemoveAlien(int id)
     {
+        int toRemoveIdx = -1;
+        // Check if aliens should get closer
+        bool getCloser = true;
         for (int i = 0; i < numAliens; ++i)
         {
-            if (Global.aliens[i].GetComponent<Alien>().id == id)
+            int alienId = Global.aliens[i].GetComponent<Alien>().id;
+            if (alienId == id)
             {
-                // Add this alien's score value to player score
-                playerScore += Global.aliens[i].GetComponent<Alien>().score;
-                Global.aliens.RemoveAt(i);
-                break;
+                toRemoveIdx = i;
+            }
+            if (alienId / 11 == closestRow && alienId != id)
+            {
+                getCloser = false;
             }
         }
-        // Update remaining number of aliens
-        Global.numAliens--;
+        if (getCloser && maxZReached)
+        {
+            maxZReached = false;
+            closestRow++;
+        }
+        if (toRemoveIdx != -1)
+        {
+            // Add this alien's score value to player score
+            playerScore += Global.aliens[toRemoveIdx].GetComponent<Alien>().score;
+            Global.aliens.RemoveAt(toRemoveIdx);
+            // Update remaining number of aliens
+            Global.numAliens--;
+        }
         if (numAliens == 0)
         {
-            // Player killed all the aliens - restore everything!
-            Global.numAliens = 55;
-            Alien.timer = 1;
             // Reset the shields
             for (int i = 0; i < numShields; ++i)
             {
@@ -121,7 +145,10 @@ public class Global : MonoBehaviour
                 shields.RemoveAt(0);
                 Destroy(toRemove);
             }
+            // Player killed all the aliens - restore everything!
+            Global.numAliens = 55;
             Global.numShields = 4;
+            Alien.timer = 1;
             Start();
             return;
         }
@@ -131,81 +158,89 @@ public class Global : MonoBehaviour
             alienSpeed.x += 0.01f;
             alienSpeed.y += 0.05f;
             Alien.timer /= 2f;
+            // Speed the ship as well
+            ship.GetComponent<Ship>().moveAcceleration += 0.075f;
+            ship.GetComponent<Ship>().bulletSpeed += 50f;
         }
     }
-
-
 
     // Update is called once per frame
     void Update()
     {
-        float deltaT = Time.deltaTime;
-        alienTimer -= deltaT;
-        // Make the closest alien shoot every 1 second
-        if (alienTimer <= 0 && Global.numAliens > 0)
+        // Make the necessary updates if game is ongoing
+        if (!isGameOver && Time.timeScale > 0)
         {
-            float minDist = 9999f; // set to a high enough value
-            int alienIdx = 0;
-            for (int i = 0; i < numAliens; ++i)
+            float deltaT = Time.deltaTime;
+            alienTimer -= deltaT;
+            // Make the closest alien shoot every 1 second
+            if (alienTimer <= 0 && Global.numAliens > 0)
             {
-                // Compute the Euclidian distance
-                float dist = Mathf.Sqrt((Global.aliens[i].transform.position.x - ship.transform.position.x) * (Global.aliens[i].transform.position.x - ship.transform.position.x) +
-                             (Global.aliens[i].transform.position.z - ship.transform.position.z) * (Global.aliens[i].transform.position.z - ship.transform.position.z));
-                if (dist < minDist)
+                float minDist = 9999f; // set to a high enough value
+                int alienIdx = 0;
+                for (int i = 0; i < numAliens; ++i)
                 {
-                    minDist = dist;
-                    alienIdx = i;
-                }
-            }
-            GameObject toShoot = Global.aliens[alienIdx];
-            // remove the selected id from the list
-            GameObject obj = toShoot.GetComponent<Alien>().Shoot();
-            for (int i = 0; i < numAliens; ++i)
-            {
-                Physics.IgnoreCollision(Global.aliens[i].GetComponent<Collider>(), obj.GetComponent<Collider>());
-            }
-            alienTimer = 1f;
-        }
-        // Check if any alien has reached the max distance
-        bool zReached = false;
-        for (int i = 0; i < numAliens; ++i)
-        {
-            if (Global.aliens[i].transform.position.x >= maxPos.x || Global.aliens[i].transform.position.x <= -maxPos.x)
-            {
-                for (int j = 0; j < numAliens; ++j)
-                {
-                    // Update movement direction
-                    Global.aliens[j].GetComponent<Alien>().moveLeft = !Global.aliens[j].GetComponent<Alien>().moveLeft;
-                    // Bring aliens closer (unless they're at maximum closeness)
-                    Vector3 updatedPosition = Global.aliens[j].GetComponent<Alien>().transform.position;
-                    if (!maxZReached)
+                    // Compute the Euclidian distance
+                    float dist = Mathf.Sqrt((Global.aliens[i].transform.position.x - ship.transform.position.x) * (Global.aliens[i].transform.position.x - ship.transform.position.x) +
+                                 (Global.aliens[i].transform.position.z - ship.transform.position.z) * (Global.aliens[i].transform.position.z - ship.transform.position.z));
+                    if (dist < minDist)
                     {
-                        updatedPosition.z -= alienSpeed.y;
-                        if (updatedPosition.z <= maxPos.y)
-                        {
-                            zReached = true;
-                        }
-                        Global.aliens[j].GetComponent<Alien>().transform.position = updatedPosition;
+                        minDist = dist;
+                        alienIdx = i;
                     }
                 }
-                break;
+                GameObject toShoot = Global.aliens[alienIdx];
+                // remove the selected id from the list
+                GameObject obj = toShoot.GetComponent<Alien>().Shoot();
+                for (int i = 0; i < numAliens; ++i)
+                {
+                    Physics.IgnoreCollision(Global.aliens[i].GetComponent<Collider>(), obj.GetComponent<Collider>());
+                }
+                alienTimer = 1f;
             }
-        }
-        if (zReached)
+            // Check if any alien has reached the max distance
+            bool zReached = false;
+            for (int i = 0; i < numAliens; ++i)
+            {
+                if (Global.aliens[i].transform.position.x >= maxPos.x || Global.aliens[i].transform.position.x <= -maxPos.x)
+                {
+                    for (int j = 0; j < numAliens; ++j)
+                    {
+                        // Update movement direction
+                        Global.aliens[j].GetComponent<Alien>().moveLeft = !Global.aliens[j].GetComponent<Alien>().moveLeft;
+                        // Bring aliens closer (unless they're at maximum closeness)
+                        Vector3 updatedPosition = Global.aliens[j].GetComponent<Alien>().transform.position;
+                        if (!maxZReached)
+                        {
+                            updatedPosition.z -= alienSpeed.y;
+                            if (updatedPosition.z <= maxPos.y)
+                            {
+                                zReached = true;
+                            }
+                            Global.aliens[j].GetComponent<Alien>().transform.position = updatedPosition;
+                        }
+                    }
+                    break;
+                }
+            }
+            if (zReached)
+            {
+                maxZReached = true;
+            }
+            // Decide if an UFO should be spawned
+            UFOTimer -= deltaT;
+            if (UFOTimer <= 0)
+            {
+                // Spawn an UFO
+                Vector3 spawnPos = new Vector3(maxPos.x, 0, 7);
+                Quaternion rot = Quaternion.identity;
+                rot *= Quaternion.Euler(Vector3.up * -90);
+                Instantiate(UFO, spawnPos, rot);
+                // Set the next UFO spawn to happen at a random time
+                UFOTimer = Random.Range(10, 20);
+            }
+        } else
         {
-            maxZReached = true;
-        }
-        // Decide if an UFO should be spawned
-        UFOTimer -= deltaT;
-        if (UFOTimer <= 0)
-        {
-            // Spawn an UFO
-            Vector3 spawnPos = new Vector3(maxPos.x, 0, 7);
-            Quaternion rot = Quaternion.identity;
-            rot *= Quaternion.Euler(Vector3.up * -90);
-            Instantiate(UFO, spawnPos, rot);
-            // Set the next UFO spawn to happen at a random time
-            UFOTimer = Random.Range(10, 20);
+            // Game is over - display Game Over title and see if player wants to continue playing
         }
     }
 }
