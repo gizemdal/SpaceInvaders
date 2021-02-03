@@ -26,6 +26,7 @@ public class Ship : MonoBehaviour
         bulletBuffer = 1f;
         hasShot = false;
         isResurrecting = false;
+        gameObject.GetComponent<Renderer>().enabled = true;
     }
 
     void FixedUpdate()
@@ -78,6 +79,8 @@ public class Ship : MonoBehaviour
         {
             // All the lives are used - display Game Over title
             Global.isGameOver = true;
+            Time.timeScale = 1;
+            Debug.Log("Game Over!!!");
         }
     }
 
@@ -89,52 +92,56 @@ public class Ship : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isResurrecting)
+        if (!Global.isGameOver)
         {
-            if (hasShot)
+            if (!isResurrecting)
             {
-                bulletBuffer -= Time.deltaTime;
-                if (bulletBuffer <= 0)
+                if (hasShot)
                 {
-                    // Ship is ready for sending bullets
-                    hasShot = false;
-                    bulletBuffer = 1f;
-                }
-            }
-
-            if (Input.GetButtonDown("Fire1"))
-            {
-                if (!hasShot)
-                {
-                    Vector3 spawnPos = gameObject.transform.position;
-                    // instantiate the Bullet
-                    GameObject obj = Instantiate(bullet, spawnPos, Quaternion.identity) as GameObject;
-                    Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), obj.GetComponent<Collider>());
-                    for (int i = 0; i < Global.shields.Count; ++i)
+                    bulletBuffer -= Time.deltaTime;
+                    if (bulletBuffer <= 0)
                     {
-                        if (Global.shields[i].GetComponent<Shield>().remainingHits == 0)
-                        {
-                            Physics.IgnoreCollision(Global.shields[i].GetComponent<Collider>(), obj.GetComponent<Collider>());
-                        }
+                        // Ship is ready for sending bullets
+                        hasShot = false;
+                        bulletBuffer = 1f;
                     }
-                    hasShot = true;
+                }
+
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    if (!hasShot)
+                    {
+                        Vector3 spawnPos = gameObject.transform.position;
+                        // instantiate the Bullet
+                        GameObject obj = Instantiate(bullet, spawnPos, Quaternion.identity) as GameObject;
+                        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), obj.GetComponent<Collider>());
+                        for (int i = 0; i < Global.shields.Count; ++i)
+                        {
+                            if (Global.shields[i].GetComponent<Shield>().remainingHits == 0)
+                            {
+                                Physics.IgnoreCollision(Global.shields[i].GetComponent<Collider>(), obj.GetComponent<Collider>());
+                            }
+                        }
+                        hasShot = true;
+                    }
                 }
             }
-        } else
-        {
-            // Ship is currently resurrecting
-            Ship.resurrectTime -= Time.fixedDeltaTime;
-            Ship.secondCount -= Time.fixedDeltaTime;
-            if (Ship.secondCount <= 0)
+            else
             {
-                gameObject.GetComponent<Renderer>().enabled = !gameObject.GetComponent<Renderer>().enabled;
-                Ship.secondCount = 1;
-            }
-            if (resurrectTime <= 0)
-            {
-                // Time to resurrect
-                resurrectTime = 5;
-                Resurrect();
+                // Ship is currently resurrecting
+                Ship.resurrectTime -= Time.fixedDeltaTime;
+                Ship.secondCount -= Time.fixedDeltaTime;
+                if (Ship.secondCount <= 0)
+                {
+                    gameObject.GetComponent<Renderer>().enabled = !gameObject.GetComponent<Renderer>().enabled;
+                    Ship.secondCount = 1;
+                }
+                if (resurrectTime <= 0)
+                {
+                    // Time to resurrect
+                    resurrectTime = 5;
+                    Resurrect();
+                }
             }
         }
     }

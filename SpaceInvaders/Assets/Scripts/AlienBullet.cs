@@ -6,9 +6,12 @@ public class AlienBullet : MonoBehaviour
 {
     public Vector3 thrust; // direction of movement
     public Quaternion heading;
+    public GameObject globalOBJ; // global game object
+
     // Start is called before the first frame update
     void Start()
     {
+        globalOBJ = GameObject.FindWithTag("Global");
         // travel straight in the Z-axis
         thrust.z = -400.0f;
         heading.z = 1;
@@ -26,7 +29,13 @@ public class AlienBullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // Check if the bullet is outside the screen
+        Vector3 currentPos = gameObject.transform.position;
+        if (currentPos.z < -20f)
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     void OnCollisionEnter(Collision collision)

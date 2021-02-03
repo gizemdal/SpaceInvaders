@@ -8,11 +8,12 @@ public class Shield : MonoBehaviour
     public static int idCount = 0; // each shield has a unique ID
     public GameObject globalOBJ; // global game object
     public int id;
-    public int remainingHits = 5;
+    public int remainingHits;
     void Start()
     {
         globalOBJ = GameObject.FindWithTag("Global");
         id = idCount;
+        remainingHits = 5;
         idCount++;
     }
 

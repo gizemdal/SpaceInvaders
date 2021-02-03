@@ -18,13 +18,14 @@ public class UFO : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.timeScale > 0)
+        if (!Global.isGameOver && Time.timeScale > 0)
         {
             // Check if UFO is outside the screen
             Vector3 currentPos = gameObject.transform.position;
             if (currentPos.x < -globalOBJ.GetComponent<Global>().maxPos.x)
             {
-                Die();
+                Destroy(gameObject);
+                return;
             }
             currentPos.x -= xSpeed;
             gameObject.transform.position = currentPos;
@@ -34,6 +35,7 @@ public class UFO : MonoBehaviour
     public void Die()
     {
         // Destroy the UFO
+        Global.playerScore += score;
         Destroy(gameObject);
     }
 }

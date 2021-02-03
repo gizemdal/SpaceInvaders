@@ -9,6 +9,7 @@ public class Global : MonoBehaviour
      */
     public static int numAliens = 55; // total number of aliens in the beginning
     public static int numShields = 4; // total number of
+    public static int closestRow = 0; // current closest alien row
     public static int rowNum = 5; // number of rows for alien group
     public static float alienTimer = 1f; // timer for alien attack
     public static float UFOTimer = 10; // timer for UFO spawn
@@ -30,15 +31,33 @@ public class Global : MonoBehaviour
     public GameObject ship; // ship game object
     public Vector2 maxPos; // maximum position an alien or the ship can take
     public bool maxZReached; // determine if the aliens need to go lower
-    public int closestRow = 0; // current closest alien row
 
     static void ResetGameStats()
     {
+        // Clean up remaining aliens and shields
+        for (int i = 0; i < numAliens; ++i)
+        {
+            GameObject toRemove = aliens[0];
+            aliens.RemoveAt(0);
+            Destroy(toRemove);
+        }
+        for (int i = 0; i < numShields; ++i)
+        {
+            GameObject toRemove = shields[0];
+            shields.RemoveAt(0);
+            Destroy(toRemove);
+        }
         Global.numAliens = 55;
-        Global.numShields = 4;
-        Global.playerScore = 0; // Reset score
+        Alien.idCount = 0;
         Alien.timer = 1;
-        Global.isGameOver = false;
+
+        Global.numShields = 4;
+        Shield.idCount = 0;
+
+        Global.alienTimer = 1;
+        Global.UFOTimer = 10;
+        Global.closestRow = 0;
+        Global.playerScore = 0; // Reset score
     }
 
     // Start is called before the first frame update
@@ -90,6 +109,7 @@ public class Global : MonoBehaviour
         Global.shields.Add(Instantiate(shield, new Vector3(-2, 0, -4f), Quaternion.identity));
         Global.shields.Add(Instantiate(shield, new Vector3(2, 0, -4f), Quaternion.identity));
         Global.shields.Add(Instantiate(shield, new Vector3(6, 0, -4f), Quaternion.identity));
+        Global.isGameOver = false;
     }
 
     public void RemoveShield(int id)
@@ -118,7 +138,7 @@ public class Global : MonoBehaviour
             {
                 toRemoveIdx = i;
             }
-            if (alienId / 11 == closestRow && alienId != id)
+            if (alienId / 11 == Global.closestRow && alienId != id)
             {
                 getCloser = false;
             }
@@ -126,7 +146,7 @@ public class Global : MonoBehaviour
         if (getCloser && maxZReached)
         {
             maxZReached = false;
-            closestRow++;
+            Global.closestRow++;
         }
         if (toRemoveIdx != -1)
         {
@@ -161,6 +181,20 @@ public class Global : MonoBehaviour
             // Speed the ship as well
             ship.GetComponent<Ship>().moveAcceleration += 0.075f;
             ship.GetComponent<Ship>().bulletSpeed += 50f;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (isGameOver)
+        {
+            if (Input.GetButtonDown("Fire1"))
+            {
+                // Start another game - first reset the game state
+                Global.ResetGameStats();
+                Start();
+                Time.timeScale = 1;
+            }
         }
     }
 

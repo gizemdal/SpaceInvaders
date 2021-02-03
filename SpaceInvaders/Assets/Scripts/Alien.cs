@@ -28,7 +28,7 @@ public class Alien : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        if (Time.timeScale > 0)
+        if (!Global.isGameOver && Time.timeScale > 0)
         {
             Vector3 updatedPosition = gameObject.transform.position;
             if (moveLeft)

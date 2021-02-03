@@ -7,11 +7,13 @@ public class ShipBullet : MonoBehaviour
     public Vector3 thrust; // direction of movement
     public Quaternion heading;
     public GameObject shipOBJ; // the ship game object
+    public GameObject globalOBJ; // global game object
 
     // Start is called before the first frame update
     void Start()
-    {
+    { 
         shipOBJ = GameObject.FindWithTag("Ship");
+        globalOBJ = GameObject.FindWithTag("Global");
         // travel straight in the Z-axis
         thrust.z = shipOBJ.GetComponent<Ship>().bulletSpeed;
         heading.z = 1;
@@ -29,7 +31,13 @@ public class ShipBullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // Check if the bullet is outside the screen
+        Vector3 currentPos = gameObject.transform.position;
+        if (currentPos.z > 40f)
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -53,8 +61,6 @@ public class ShipBullet : MonoBehaviour
         } 
         else if (collider.CompareTag("UFO"))
         {
-            // TODO: Give player points
-            // Kill the UFO
             collider.gameObject.GetComponent<UFO>().Die();
         }
     }
