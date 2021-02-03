@@ -184,20 +184,6 @@ public class Global : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        if (isGameOver)
-        {
-            if (Input.GetButtonDown("Fire1"))
-            {
-                // Start another game - first reset the game state
-                Global.ResetGameStats();
-                Start();
-                Time.timeScale = 1;
-            }
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -275,6 +261,13 @@ public class Global : MonoBehaviour
         } else
         {
             // Game is over - display Game Over title and see if player wants to continue playing
+            if (Input.GetButtonDown("Fire1"))
+            {
+                // Start another game - first reset the game state
+                Global.ResetGameStats();
+                Start();
+                Time.timeScale = 1;
+            }
         }
     }
 }
