@@ -31,6 +31,7 @@ public class Global : MonoBehaviour
     public GameObject ship; // ship game object
     public Vector2 maxPos; // maximum position an alien or the ship can take
     public bool maxZReached; // determine if the aliens need to go lower
+    public GameObject currentUFO; // store current spawned UFO
 
     static void ResetGameStats()
     {
@@ -63,6 +64,10 @@ public class Global : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (currentUFO != null)
+        {
+            Destroy(currentUFO);
+        }
         alienSpeed = new Vector2(0.01f, 0.075f); // initial speed
         // Reset ship state
         ship.GetComponent<Ship>().ResetState();
@@ -254,7 +259,7 @@ public class Global : MonoBehaviour
                 Vector3 spawnPos = new Vector3(maxPos.x, 0, 7);
                 Quaternion rot = Quaternion.identity;
                 rot *= Quaternion.Euler(Vector3.up * -90);
-                Instantiate(UFO, spawnPos, rot);
+                currentUFO = Instantiate(UFO, spawnPos, rot) as GameObject;
                 // Set the next UFO spawn to happen at a random time
                 UFOTimer = Random.Range(10, 20);
             }
