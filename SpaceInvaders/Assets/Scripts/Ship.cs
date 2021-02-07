@@ -6,6 +6,7 @@ public class Ship : MonoBehaviour
 {
     public static float resurrectTime = 5;
     public static float secondCount = 1;
+    public static int remainingLives = 3;
     /*
      * Some public variables to alter ship's movement
      */
@@ -15,14 +16,12 @@ public class Ship : MonoBehaviour
     public GameObject globalOBJ; // global game object
     public float bulletBuffer; // bullet buffer time (1 second)
     public bool hasShot; // has the ship sent a bullet?
-    public int remainingLives;
     public bool isResurrecting; // is the ship currently resurrecting?
     // Start is called before the first frame update
     void Start()
     {
         moveAcceleration = 0.1f;
         bulletSpeed = 400f;
-        remainingLives = 3;
         bulletBuffer = 1f;
         hasShot = false;
         isResurrecting = false;
@@ -34,7 +33,7 @@ public class Ship : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") > 0)
         {
             Vector3 updatedPosition = gameObject.transform.position;
-            if (updatedPosition.x < globalOBJ.GetComponent<Global>().maxPos.x)
+            if (updatedPosition.x < (globalOBJ.GetComponent<Global>().maxPos.x - 1f))
             {
                 updatedPosition.x += moveAcceleration;
                 gameObject.transform.position = updatedPosition;
@@ -43,7 +42,7 @@ public class Ship : MonoBehaviour
         else if (Input.GetAxisRaw("Horizontal") < 0)
         {
             Vector3 updatedPosition = gameObject.transform.position;
-            if (updatedPosition.x > -globalOBJ.GetComponent<Global>().maxPos.x)
+            if (updatedPosition.x > (-globalOBJ.GetComponent<Global>().maxPos.x + 1f))
             {
                 updatedPosition.x -= moveAcceleration;
                 gameObject.transform.position = updatedPosition;
@@ -67,12 +66,12 @@ public class Ship : MonoBehaviour
     // Call this method when the ship is shot
     public void Kill()
     {
-        remainingLives--;
+        Ship.remainingLives--;
         // Stop the time
         Time.timeScale = 0;
         // Stop rendering the ship
         gameObject.GetComponent<Renderer>().enabled = false;
-        if (remainingLives > 0)
+        if (Ship.remainingLives > 0)
         {
             isResurrecting = true;
         } else

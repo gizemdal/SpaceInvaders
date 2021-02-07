@@ -52,6 +52,8 @@ public class Global : MonoBehaviour
         Alien.idCount = 0;
         Alien.timer = 1;
 
+        Ship.remainingLives = 3;
+
         Global.numShields = 4;
         Shield.idCount = 0;
 
@@ -68,7 +70,7 @@ public class Global : MonoBehaviour
         {
             Destroy(currentUFO);
         }
-        alienSpeed = new Vector2(0.01f, 0.075f); // initial speed
+        alienSpeed = new Vector2(0.01f, 0.1f); // initial speed
         // Reset ship state
         ship.GetComponent<Ship>().ResetState();
         // Create the aliens
@@ -182,7 +184,7 @@ public class Global : MonoBehaviour
         {
             alienSpeed.x += 0.01f;
             alienSpeed.y += 0.05f;
-            Alien.timer /= 2f;
+            Alien.timer /= 1.5f;
             // Speed the ship as well
             ship.GetComponent<Ship>().moveAcceleration += 0.075f;
             ship.GetComponent<Ship>().bulletSpeed += 50f;
@@ -192,6 +194,10 @@ public class Global : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetButtonDown("Fire2"))
+        {
+            Application.Quit();
+        }
         // Make the necessary updates if game is ongoing
         if (!isGameOver && Time.timeScale > 0)
         {

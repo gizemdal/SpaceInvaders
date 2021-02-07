@@ -11,7 +11,7 @@ public class UFO : MonoBehaviour
     void Start()
     {
         score = Random.Range(40, 51); // Randomize score
-        xSpeed = 0.015f;
+        xSpeed = 0.025f;
         globalOBJ = GameObject.FindWithTag("Global");
     }
 
