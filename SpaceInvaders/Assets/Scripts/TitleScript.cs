@@ -5,12 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class TitleScript : MonoBehaviour
 {
-	private GUIStyle buttonStyle;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -19,26 +18,18 @@ public class TitleScript : MonoBehaviour
         
     }
 
-    void OnGUI()
+    public void StartGame()
     {
-    	GUILayout.BeginArea(new Rect(10, Screen.height / 2 + 100, Screen.width - 10, 200));
+        SceneManager.LoadScene("GameScene");
+    }
 
-        // Load the main scene
-        // The scene needs to be added into build setting to be loaded!
+    public void ShowHighScores()
+    {
+        Debug.Log("This is not implemented yet!");
+    }
 
-        if (GUILayout.Button("New Game"))
-        {
-           SceneManager.LoadScene("GameScene");
-        }
-        if (GUILayout.Button("High Score"))
-        {
-            Debug.Log("This is not implemented yet!");
-        }
-        if (GUILayout.Button("Exit"))
-        {
-            Application.Quit();
-        }
-
-        GUILayout.EndArea();
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
