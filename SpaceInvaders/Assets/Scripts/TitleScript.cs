@@ -9,7 +9,7 @@ public class TitleScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -26,6 +26,16 @@ public class TitleScript : MonoBehaviour
     public void ShowHighScores()
     {
         Debug.Log("This is not implemented yet!");
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("TitleScene");
     }
 
     public void QuitGame()

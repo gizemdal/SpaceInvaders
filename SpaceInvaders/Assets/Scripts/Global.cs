@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Global : MonoBehaviour
 {
@@ -272,12 +273,11 @@ public class Global : MonoBehaviour
         } else
         {
             // Game is over - display Game Over title and see if player wants to continue playing
-            if (Input.GetButtonDown("Fire1"))
-            {
-                // Start another game - first reset the game state
+            if (isGameOver) {
+                // Reset the game state
                 Global.ResetGameStats();
-                Start();
                 Time.timeScale = 1;
+                SceneManager.LoadScene("GameOverScene");
             }
         }
     }

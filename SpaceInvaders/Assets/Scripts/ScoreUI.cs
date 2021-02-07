@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ScoreUI : MonoBehaviour
 {
-    Text scoreText;
+    TMP_Text scoreText;
     int prevScore = 0;
     // Start is called before the first frame update
     void Start()
     {
-        scoreText = gameObject.GetComponent<Text>();
+        scoreText = gameObject.GetComponent<TMP_Text>();
     }
 
     // Update is called once per frame
@@ -19,7 +20,7 @@ public class ScoreUI : MonoBehaviour
         int currentScore = Global.playerScore;
         if (prevScore != currentScore)
         {
-            scoreText.text = "SCORE = " + currentScore;
+            scoreText.SetText("SCORE = " + currentScore);
             prevScore = currentScore;
         }
     }

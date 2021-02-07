@@ -79,7 +79,6 @@ public class Ship : MonoBehaviour
             // All the lives are used - display Game Over title
             Global.isGameOver = true;
             Time.timeScale = 1;
-            Debug.Log("Game Over!!!");
         }
     }
 
