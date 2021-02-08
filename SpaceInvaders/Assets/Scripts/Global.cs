@@ -342,13 +342,13 @@ public class Global : MonoBehaviour
                 {
                     case 1:
                         // Generate bullet speed
-                        ship.GetComponent<Ship>().bulletSpeed /= 1.5f;
+                        ship.GetComponent<Ship>().bulletSpeed /= 2f;
                         fasterBullet.gameObject.SetActive(false);
                         fasterBullet.enabled = false;
                         break;
                     case 2:
                         // Generate faster bullet reload
-                        ship.GetComponent<Ship>().bulletBuffer /= 0.5f;
+                        ship.GetComponent<Ship>().bulletBuffer /= 0.35f;
                         fasterBuffer.gameObject.SetActive(false);
                         fasterBuffer.enabled = false;
                         break;
