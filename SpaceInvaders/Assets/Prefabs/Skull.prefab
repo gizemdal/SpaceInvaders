@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6890599167281337374}
   - component: {fileID: 4833302989124867480}
   - component: {fileID: 3709022221704245914}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Skull
   m_TagString: Alien
   m_Icon: {fileID: 0}
@@ -127,7 +127,12 @@ MonoBehaviour:
   id: 0
   bullet: {fileID: 8073403683615779463, guid: 3e6cdbfb911aa8d44bf0551952c8a775, type: 3}
   globalOBJ: {fileID: 0}
+  explosion: {fileID: 1433454235055071648, guid: bdde8a76111634bc98815e364d92c747,
+    type: 3}
   firstMesh: {fileID: -1312066481380696420, guid: 73ad999706d20d4459ff47783ad2eb13,
     type: 3}
   secondMesh: {fileID: -1364087873485794358, guid: a0225e5e622366f42afceb7c6d7171fb,
     type: 3}
+  meshTimer: 0
+  initMesh: 1
+  score: 0

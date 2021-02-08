@@ -10,6 +10,7 @@ public class Alien : MonoBehaviour
     public int id;
     public GameObject bullet; // spawned for alien attack
     public GameObject globalOBJ; // global game object
+    public GameObject explosion; // explosion debris
     public Mesh firstMesh; // initial mesh
     public Mesh secondMesh; // other mesh
     public float meshTimer; // timer for alien move change
@@ -28,7 +29,7 @@ public class Alien : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        if (!Global.isGameOver && Time.timeScale > 0)
+        if (!Global.isGameOver && !Global.isPause)
         {
             Vector3 updatedPosition = gameObject.transform.position;
             if (moveLeft)
@@ -65,6 +66,9 @@ public class Alien : MonoBehaviour
     public void Die()
     {
         globalOBJ.GetComponent<Global>().RemoveAlien(this.id); // remove the alien with given id
+        // Create debris
+        Vector3 spawnPos = gameObject.transform.position;
+        Instantiate(explosion, spawnPos, Quaternion.identity);
         Destroy(gameObject); // Kill the alien
     }
 

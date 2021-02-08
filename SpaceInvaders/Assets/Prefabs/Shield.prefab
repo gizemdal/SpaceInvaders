@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5083750058276922500}
   - component: {fileID: 5083750058276922503}
   - component: {fileID: 5083750058276922502}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Shield
   m_TagString: Shield
   m_Icon: {fileID: 0}
@@ -107,6 +107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cca13202fbb703b499d2fcb787e581c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalOBJ: {fileID: 0}
+  id: 0
   remainingHits: 5
 --- !u!54 &5083750058276922502
 Rigidbody:

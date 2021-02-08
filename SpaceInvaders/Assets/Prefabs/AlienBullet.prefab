@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8073403683615779462}
   - component: {fileID: 8101491948197386695}
   - component: {fileID: 1121076789388364755}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AlienBullet
   m_TagString: AlienBullet
   m_Icon: {fileID: 0}
@@ -112,6 +112,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrust: {x: 0, y: 0, z: 0}
   heading: {x: 0, y: 0, z: 0, w: 0}
+  globalOBJ: {fileID: 0}
+  explosion: {fileID: 7525396874586953241, guid: 62454c9020e7f403da74f146722dbcb5,
+    type: 3}
 --- !u!65 &1121076789388364755
 BoxCollider:
   m_ObjectHideFlags: 0

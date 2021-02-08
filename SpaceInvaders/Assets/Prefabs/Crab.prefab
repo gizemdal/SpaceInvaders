@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3068747322098114275}
   - component: {fileID: 3068747322098114274}
   - component: {fileID: 4919431097044270279}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Crab
   m_TagString: Alien
   m_Icon: {fileID: 0}
@@ -114,10 +114,15 @@ MonoBehaviour:
   id: 0
   bullet: {fileID: 8073403683615779463, guid: 3e6cdbfb911aa8d44bf0551952c8a775, type: 3}
   globalOBJ: {fileID: 0}
+  explosion: {fileID: 213755806431364575, guid: 25b1699d75e7f4b45bdf48cf28c02b47,
+    type: 3}
   firstMesh: {fileID: 8421744311104621043, guid: 2aa38f9775a329d47852e1245275fe15,
     type: 3}
   secondMesh: {fileID: -1116444134294172880, guid: dbd73a3845fc06b4e9181d2bb811652b,
     type: 3}
+  meshTimer: 0
+  initMesh: 1
+  score: 0
 --- !u!65 &4919431097044270279
 BoxCollider:
   m_ObjectHideFlags: 0

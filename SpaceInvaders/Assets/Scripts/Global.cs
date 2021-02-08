@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class Global : MonoBehaviour
 {
@@ -12,10 +14,15 @@ public class Global : MonoBehaviour
     public static int numShields = 4; // total number of
     public static int closestRow = 0; // current closest alien row
     public static int rowNum = 5; // number of rows for alien group
-    public static float alienTimer = 1f; // timer for alien attack
+    public static float alienTimer = 2f; // timer for alien attack
     public static float UFOTimer = 10; // timer for UFO spawn
     public static int playerScore = 0; // Keep track of player score
     public static bool isGameOver = false; // has the player lost all their lives?
+    public static bool isPause = false; // is the timer paused?
+    public static int shipStreak; // keep track of consecutive target hits
+    public static bool isRewardActive = false; // is any reward active?
+    public static float rewardDuration = 5; // how long the reward lasts
+    public static int activeReward; // index of active reward
     public static List<GameObject> aliens = new List<GameObject>();
     public static List<GameObject> shields = new List<GameObject>();
 
@@ -30,6 +37,13 @@ public class Global : MonoBehaviour
     public GameObject shield; // shield to spawn
     public GameObject UFO; // UFO to spawn
     public GameObject ship; // ship game object
+    public TMP_Text fasterBullet;
+    public TMP_Text fasterBuffer;
+    // Some resources
+    public GameObject extraLife;
+    public GameObject bulletSpeed;
+    public GameObject fasterReload;
+
     public Vector2 maxPos; // maximum position an alien or the ship can take
     public bool maxZReached; // determine if the aliens need to go lower
     public GameObject currentUFO; // store current spawned UFO
@@ -58,10 +72,38 @@ public class Global : MonoBehaviour
         Global.numShields = 4;
         Shield.idCount = 0;
 
-        Global.alienTimer = 1;
+        Global.alienTimer = 2;
         Global.UFOTimer = 10;
         Global.closestRow = 0;
         Global.playerScore = 0; // Reset score
+        Global.shipStreak = 0;
+    }
+
+    // Generate a reward
+    public void generateReward(Vector3 spawnPos)
+    {
+        // Pick a random reward to generate
+        int rewardIdx = Random.Range(1, 3);
+        GameObject reward = null;
+        switch(rewardIdx) {
+            case 0:
+                // Generate extra life
+                reward = Instantiate(extraLife, spawnPos, Quaternion.identity) as GameObject;
+                break;
+            case 1:
+                // Generate bullet speed
+                reward = Instantiate(bulletSpeed, spawnPos, Quaternion.identity) as GameObject;
+                break;
+            case 2:
+                // Generate faster bullet reload
+                reward = Instantiate(fasterReload, spawnPos, Quaternion.identity) as GameObject;
+                break;
+            default:
+                break;
+        }
+        if (reward != null) {
+            reward.GetComponent<RewardScript>().rewardIdx = rewardIdx;
+        }
     }
 
     // Start is called before the first frame update
@@ -187,8 +229,8 @@ public class Global : MonoBehaviour
             alienSpeed.y += 0.05f;
             Alien.timer /= 1.5f;
             // Speed the ship as well
-            ship.GetComponent<Ship>().moveAcceleration += 0.075f;
-            ship.GetComponent<Ship>().bulletSpeed += 50f;
+            ship.GetComponent<Ship>().moveAcceleration += 0.05f;
+            //ship.GetComponent<Ship>().bulletSpeed += 50f;
         }
     }
 
@@ -199,10 +241,19 @@ public class Global : MonoBehaviour
         {
             Application.Quit();
         }
-        // Make the necessary updates if game is ongoing
-        if (!isGameOver && Time.timeScale > 0)
+        if (ship.GetComponent<Ship>().isResurrecting)
         {
-            float deltaT = Time.deltaTime;
+            Global.isRewardActive = false;
+            Global.rewardDuration = 5;
+            fasterBullet.gameObject.SetActive(false);
+            fasterBullet.enabled = false;
+            fasterBuffer.gameObject.SetActive(false);
+            fasterBuffer.enabled = false;
+        }
+        float deltaT = Time.deltaTime;
+        // Make the necessary updates if game is ongoing
+        if (!isGameOver && !isPause)
+        {
             alienTimer -= deltaT;
             // Make the closest alien shoot every 1 second
             if (alienTimer <= 0 && Global.numAliens > 0)
@@ -227,7 +278,7 @@ public class Global : MonoBehaviour
                 {
                     Physics.IgnoreCollision(Global.aliens[i].GetComponent<Collider>(), obj.GetComponent<Collider>());
                 }
-                alienTimer = 1f;
+                alienTimer = 2f;
             }
             // Check if any alien has reached the max distance
             bool zReached = false;
@@ -270,13 +321,53 @@ public class Global : MonoBehaviour
                 // Set the next UFO spawn to happen at a random time
                 UFOTimer = Random.Range(10, 20);
             }
+            if (Global.isRewardActive) 
+            {
+                switch(Global.activeReward)
+                {
+                    case 1:
+                        // Generate bullet speed
+                        fasterBullet.text = "Speedy bullet  ending in " + (int) Global.rewardDuration;
+                        break;
+                    case 2:
+                        // Generate faster bullet reload
+                        fasterBuffer.text = "Faster reload  ending in " + (int) Global.rewardDuration;
+                        break;
+                    default:
+                        break;
+                }
+                Global.rewardDuration -= deltaT;
+            }
+            if (Global.rewardDuration <= 0)
+            {
+                // Inactivate the reward
+                Global.isRewardActive = false;
+                switch(Global.activeReward)
+                {
+                    case 1:
+                        // Generate bullet speed
+                        ship.GetComponent<Ship>().bulletSpeed /= 1.5f;
+                        fasterBullet.gameObject.SetActive(false);
+                        fasterBullet.enabled = false;
+                        break;
+                    case 2:
+                        // Generate faster bullet reload
+                        ship.GetComponent<Ship>().bulletBuffer /= 0.5f;
+                        fasterBuffer.gameObject.SetActive(false);
+                        fasterBuffer.enabled = false;
+                        break;
+                    default:
+                        break;
+                }
+            Global.rewardDuration = 5;
+            }
         } else
         {
             // Game is over - display Game Over title and see if player wants to continue playing
             if (isGameOver) {
                 // Reset the game state
                 Global.ResetGameStats();
-                Time.timeScale = 1;
+                Global.isPause = false;
                 SceneManager.LoadScene("GameOverScene");
             }
         }

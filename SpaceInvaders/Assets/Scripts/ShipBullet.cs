@@ -8,6 +8,7 @@ public class ShipBullet : MonoBehaviour
     public Quaternion heading;
     public GameObject shipOBJ; // the ship game object
     public GameObject globalOBJ; // global game object
+    public GameObject explosion;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,8 @@ public class ShipBullet : MonoBehaviour
         Vector3 currentPos = gameObject.transform.position;
         if (currentPos.z > 40f)
         {
+            // The ship missed the targets
+            Global.shipStreak = 0;
             Destroy(gameObject);
             return;
         }
@@ -46,12 +49,23 @@ public class ShipBullet : MonoBehaviour
         if (collider.CompareTag("Alien"))
         {
             // Kill the alien
+            Vector3 spawnPos = collider.gameObject.GetComponent<Alien>().transform.position;
             collider.gameObject.GetComponent<Alien>().Die();
+            Instantiate(explosion, spawnPos, Quaternion.identity);
+            // Hit the target successfully - increase streak count
+            Global.shipStreak++;
+            if (Global.shipStreak % 10 == 0) {
+                // generate a reward
+                globalOBJ.GetComponent<Global>().generateReward(spawnPos);
+            }
             Destroy(gameObject);
         }
         else if (collider.CompareTag("Shield"))
         {
+            Vector3 spawnPos = gameObject.transform.position;
+            Instantiate(explosion, spawnPos, Quaternion.identity);
             collider.gameObject.GetComponent<Shield>().HitUpdate();
+            Global.shipStreak = 0;
             Destroy(gameObject);
         } 
         else if (collider.CompareTag("AlienBullet"))
@@ -61,7 +75,20 @@ public class ShipBullet : MonoBehaviour
         } 
         else if (collider.CompareTag("UFO"))
         {
+            Vector3 spawnPos = collider.gameObject.GetComponent<UFO>().transform.position;
             collider.gameObject.GetComponent<UFO>().Die();
+            Instantiate(explosion, spawnPos, Quaternion.identity);
+            // Hit the target successfully - increase streak count
+            Global.shipStreak++;
+            if (Global.shipStreak % 10 == 0) {
+                // generate a reward
+                globalOBJ.GetComponent<Global>().generateReward(spawnPos);
+            }
+            Destroy(gameObject);
+        }
+        else if (collider.CompareTag("Debris"))
+        {
+            Destroy(gameObject);
         }
     }
 }

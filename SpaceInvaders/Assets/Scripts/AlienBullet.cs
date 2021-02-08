@@ -7,6 +7,7 @@ public class AlienBullet : MonoBehaviour
     public Vector3 thrust; // direction of movement
     public Quaternion heading;
     public GameObject globalOBJ; // global game object
+    public GameObject explosion;
 
     // Start is called before the first frame update
     void Start()
@@ -49,6 +50,9 @@ public class AlienBullet : MonoBehaviour
             Destroy(gameObject);
         } else if (collider.CompareTag("Shield"))
         {
+            // Generate explosion and debris
+            Vector3 spawnPos = gameObject.transform.position;
+            Instantiate(explosion, spawnPos, Quaternion.identity);
             collider.gameObject.GetComponent<Shield>().HitUpdate();
             Destroy(gameObject);
         } else if (collider.CompareTag("AlienBullet"))
@@ -58,6 +62,11 @@ public class AlienBullet : MonoBehaviour
         } else if (collider.CompareTag("ShipBullet"))
         {
             // Destroy the bullet
+            Destroy(gameObject);
+        } else if (collider.CompareTag("Platform")) {
+            // Generate explosion and debris
+            Vector3 spawnPos = gameObject.transform.position;
+            Instantiate(explosion, spawnPos, Quaternion.identity);
             Destroy(gameObject);
         }
     }

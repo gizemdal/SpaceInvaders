@@ -14,6 +14,8 @@ public class Ship : MonoBehaviour
     public float bulletSpeed;
     public GameObject bullet; // the GameObject to spawn
     public GameObject globalOBJ; // global game object
+    public GameObject explosion; // explosion debris
+    public GameObject currExplosion;
     public float bulletBuffer; // bullet buffer time (1 second)
     public bool hasShot; // has the ship sent a bullet?
     public bool isResurrecting; // is the ship currently resurrecting?
@@ -30,22 +32,24 @@ public class Ship : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Input.GetAxisRaw("Horizontal") > 0)
-        {
-            Vector3 updatedPosition = gameObject.transform.position;
-            if (updatedPosition.x < (globalOBJ.GetComponent<Global>().maxPos.x - 1f))
+        if (!Global.isPause) {
+            if (Input.GetAxisRaw("Horizontal") > 0)
             {
-                updatedPosition.x += moveAcceleration;
-                gameObject.transform.position = updatedPosition;
+                Vector3 updatedPosition = gameObject.transform.position;
+                if (updatedPosition.x < (globalOBJ.GetComponent<Global>().maxPos.x - 1f))
+                {
+                    updatedPosition.x += moveAcceleration;
+                    gameObject.transform.position = updatedPosition;
+                }
             }
-        }
-        else if (Input.GetAxisRaw("Horizontal") < 0)
-        {
-            Vector3 updatedPosition = gameObject.transform.position;
-            if (updatedPosition.x > (-globalOBJ.GetComponent<Global>().maxPos.x + 1f))
+            else if (Input.GetAxisRaw("Horizontal") < 0)
             {
-                updatedPosition.x -= moveAcceleration;
-                gameObject.transform.position = updatedPosition;
+                Vector3 updatedPosition = gameObject.transform.position;
+                if (updatedPosition.x > (-globalOBJ.GetComponent<Global>().maxPos.x + 1f))
+                {
+                    updatedPosition.x -= moveAcceleration;
+                    gameObject.transform.position = updatedPosition;
+                }
             }
         }
     }
@@ -54,10 +58,22 @@ public class Ship : MonoBehaviour
     {
         // Reset ship position
         gameObject.transform.position = new Vector3(0, 0, -7);
+        // Delete the particles
+        Destroy(currExplosion);
+        // Delete existing bullets and debris in the game
+        GameObject[] allAlienBullets = GameObject.FindGameObjectsWithTag("AlienBullet");
+        foreach (GameObject alienB in allAlienBullets) {
+            Destroy(alienB);
+        }
+        GameObject[] allDebris = GameObject.FindGameObjectsWithTag("Debris");
+        foreach (GameObject deb in allDebris) {
+            Destroy(deb);
+        }
         // Enable ship render
         gameObject.GetComponent<Renderer>().enabled = true;
+        gameObject.layer = 8;
         // Start the time
-        Time.timeScale = 1;
+        Global.isPause = false;
         // Resurrection is done - set isResurrecting to false
 
         isResurrecting = false;
@@ -68,9 +84,22 @@ public class Ship : MonoBehaviour
     {
         Ship.remainingLives--;
         // Stop the time
-        Time.timeScale = 0;
+        Global.isPause = true;
         // Stop rendering the ship
         gameObject.GetComponent<Renderer>().enabled = false;
+        gameObject.layer = 0;
+        Global.shipStreak = 0; // Kill ship streak
+        bulletSpeed = 400f;
+        bulletBuffer = 1f;
+        Global.isRewardActive = false;
+        Global.rewardDuration = 5;
+        // Create explosion
+        Vector3 spawnPos = gameObject.transform.position;
+        currExplosion = Instantiate(explosion, new Vector3(spawnPos.x, spawnPos.y, spawnPos.z + 1), Quaternion.identity) as GameObject;
+        GameObject[] allShipBullets = GameObject.FindGameObjectsWithTag("ShipBullet");
+        foreach (GameObject shipB in allShipBullets) {
+            Destroy(shipB);
+        }
         if (Ship.remainingLives > 0)
         {
             isResurrecting = true;
@@ -78,7 +107,7 @@ public class Ship : MonoBehaviour
         {
             // All the lives are used - display Game Over title
             Global.isGameOver = true;
-            Time.timeScale = 1;
+            Global.isPause = false;
         }
     }
 
@@ -131,7 +160,6 @@ public class Ship : MonoBehaviour
                 Ship.secondCount -= Time.fixedDeltaTime;
                 if (Ship.secondCount <= 0)
                 {
-                    gameObject.GetComponent<Renderer>().enabled = !gameObject.GetComponent<Renderer>().enabled;
                     Ship.secondCount = 1;
                 }
                 if (resurrectTime <= 0)

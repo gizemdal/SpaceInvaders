@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5608099041428244584}
   - component: {fileID: 1029727641861665277}
   - component: {fileID: 8562367786175118296}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: UFO
   m_TagString: UFO
   m_Icon: {fileID: 0}
@@ -125,3 +125,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSpeed: 0
   globalOBJ: {fileID: 0}
+  explosion: {fileID: 6759945327355914556, guid: 280e9c792fcc8453182f03b466ff9d9b,
+    type: 3}
+  score: 0

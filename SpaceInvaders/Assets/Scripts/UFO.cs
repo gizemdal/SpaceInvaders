@@ -6,6 +6,7 @@ public class UFO : MonoBehaviour
 {
     public float xSpeed; // speed of the UFO in x-direction
     public GameObject globalOBJ; // global game object
+    public GameObject explosion; // explosion debris
     public int score; // score value
     // Start is called before the first frame update
     void Start()
@@ -18,7 +19,7 @@ public class UFO : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Global.isGameOver && Time.timeScale > 0)
+        if (!Global.isGameOver && !Global.isPause)
         {
             // Check if UFO is outside the screen
             Vector3 currentPos = gameObject.transform.position;
@@ -36,6 +37,9 @@ public class UFO : MonoBehaviour
     {
         // Destroy the UFO
         Global.playerScore += score;
+        // Create debris
+        Vector3 spawnPos = gameObject.transform.position;
+        Instantiate(explosion, spawnPos, Quaternion.identity);
         Destroy(gameObject);
     }
 }
