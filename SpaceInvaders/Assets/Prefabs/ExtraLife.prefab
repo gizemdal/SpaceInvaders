@@ -128,3 +128,6 @@ MonoBehaviour:
   heading: {x: 0, y: 0, z: 0, w: 0}
   rewardIdx: 0
   sparkle: {fileID: 107858696807293709, guid: 14255a7dbd9ff42bfa2c675a583ba860, type: 3}
+  shipOBJ: {fileID: 0}
+  globalOBJ: {fileID: 0}
+  getItem: {fileID: 8300000, guid: 4a7ac07a157704c0eb313a04ebd78c5e, type: 3}

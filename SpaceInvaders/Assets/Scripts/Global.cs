@@ -14,8 +14,8 @@ public class Global : MonoBehaviour
     public static int numShields = 4; // total number of
     public static int closestRow = 0; // current closest alien row
     public static int rowNum = 5; // number of rows for alien group
-    public static float alienTimer = 2f; // timer for alien attack
-    public static float UFOTimer = 10; // timer for UFO spawn
+    public static float alienTimer = 1f; // timer for alien attack
+    public static float UFOTimer = 20; // timer for UFO spawn
     public static int playerScore = 0; // Keep track of player score
     public static bool isGameOver = false; // has the player lost all their lives?
     public static bool isPause = false; // is the timer paused?
@@ -72,8 +72,8 @@ public class Global : MonoBehaviour
         Global.numShields = 4;
         Shield.idCount = 0;
 
-        Global.alienTimer = 2;
-        Global.UFOTimer = 10;
+        Global.alienTimer = 1;
+        Global.UFOTimer = 20;
         Global.closestRow = 0;
         Global.playerScore = 0; // Reset score
         Global.shipStreak = 0;
@@ -83,23 +83,19 @@ public class Global : MonoBehaviour
     public void generateReward(Vector3 spawnPos)
     {
         // Pick a random reward to generate
-        int rewardIdx = Random.Range(1, 3);
+        int rewardIdx = Random.Range(0, 9);
         GameObject reward = null;
-        switch(rewardIdx) {
-            case 0:
-                // Generate extra life
-                reward = Instantiate(extraLife, spawnPos, Quaternion.identity) as GameObject;
-                break;
-            case 1:
-                // Generate bullet speed
-                reward = Instantiate(bulletSpeed, spawnPos, Quaternion.identity) as GameObject;
-                break;
-            case 2:
-                // Generate faster bullet reload
-                reward = Instantiate(fasterReload, spawnPos, Quaternion.identity) as GameObject;
-                break;
-            default:
-                break;
+        if (rewardIdx == 0) {
+            // Generate extra life
+            reward = Instantiate(extraLife, spawnPos, Quaternion.identity) as GameObject;
+        } else if (rewardIdx < 5) {
+            // Generate bullet speed
+            reward = Instantiate(bulletSpeed, spawnPos, Quaternion.identity) as GameObject;
+            rewardIdx = 1;
+        } else {
+            // Generate faster bullet reload
+            reward = Instantiate(fasterReload, spawnPos, Quaternion.identity) as GameObject;
+            rewardIdx = 2;
         }
         if (reward != null) {
             reward.GetComponent<RewardScript>().rewardIdx = rewardIdx;
@@ -278,7 +274,7 @@ public class Global : MonoBehaviour
                 {
                     Physics.IgnoreCollision(Global.aliens[i].GetComponent<Collider>(), obj.GetComponent<Collider>());
                 }
-                alienTimer = 2f;
+                alienTimer = 1f;
             }
             // Check if any alien has reached the max distance
             bool zReached = false;

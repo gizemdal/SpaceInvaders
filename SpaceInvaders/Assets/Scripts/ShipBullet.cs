@@ -10,6 +10,9 @@ public class ShipBullet : MonoBehaviour
     public GameObject globalOBJ; // global game object
     public GameObject explosion;
 
+    public AudioClip laser;
+    public AudioClip alien_kill;
+
     // Start is called before the first frame update
     void Start()
     { 
@@ -27,6 +30,8 @@ public class ShipBullet : MonoBehaviour
 
         // apply thrust once, no need to apply it again
         GetComponent<Rigidbody>().AddRelativeForce(thrust);
+
+        AudioSource.PlayClipAtPoint(laser, gameObject.transform.position);
     }
 
     // Update is called once per frame
@@ -50,6 +55,7 @@ public class ShipBullet : MonoBehaviour
         {
             // Kill the alien
             Vector3 spawnPos = collider.gameObject.GetComponent<Alien>().transform.position;
+            AudioSource.PlayClipAtPoint(alien_kill, gameObject.transform.position);
             collider.gameObject.GetComponent<Alien>().Die();
             Instantiate(explosion, spawnPos, Quaternion.identity);
             // Hit the target successfully - increase streak count

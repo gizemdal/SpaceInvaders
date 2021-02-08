@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ship : MonoBehaviour
 {
-    public static float resurrectTime = 5;
+    public static float resurrectTime = 3;
     public static float secondCount = 1;
     public static int remainingLives = 3;
     /*
@@ -19,6 +19,9 @@ public class Ship : MonoBehaviour
     public float bulletBuffer; // bullet buffer time (1 second)
     public bool hasShot; // has the ship sent a bullet?
     public bool isResurrecting; // is the ship currently resurrecting?
+
+    public AudioClip ship_kill;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,6 +85,7 @@ public class Ship : MonoBehaviour
     // Call this method when the ship is shot
     public void Kill()
     {
+        AudioSource.PlayClipAtPoint(ship_kill, gameObject.transform.position);
         Ship.remainingLives--;
         // Stop the time
         Global.isPause = true;
@@ -165,7 +169,7 @@ public class Ship : MonoBehaviour
                 if (resurrectTime <= 0)
                 {
                     // Time to resurrect
-                    resurrectTime = 5;
+                    resurrectTime = 3;
                     Resurrect();
                 }
             }

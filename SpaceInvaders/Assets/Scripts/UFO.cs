@@ -8,12 +8,15 @@ public class UFO : MonoBehaviour
     public GameObject globalOBJ; // global game object
     public GameObject explosion; // explosion debris
     public int score; // score value
+
     // Start is called before the first frame update
     void Start()
     {
         score = Random.Range(40, 51); // Randomize score
-        xSpeed = 0.025f;
+        xSpeed = 0.045f;
         globalOBJ = GameObject.FindWithTag("Global");
+        GetComponent<AudioSource>().Play();
+        GetComponent<AudioSource>().loop = true;
     }
 
     // Update is called once per frame
@@ -25,6 +28,7 @@ public class UFO : MonoBehaviour
             Vector3 currentPos = gameObject.transform.position;
             if (currentPos.x < -globalOBJ.GetComponent<Global>().maxPos.x)
             {
+                GetComponent<AudioSource>().Stop();
                 Destroy(gameObject);
                 return;
             }
@@ -40,6 +44,7 @@ public class UFO : MonoBehaviour
         // Create debris
         Vector3 spawnPos = gameObject.transform.position;
         Instantiate(explosion, spawnPos, Quaternion.identity);
+        GetComponent<AudioSource>().Stop();
         Destroy(gameObject);
     }
 }

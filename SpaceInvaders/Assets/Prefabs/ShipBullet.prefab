@@ -100,6 +100,8 @@ MonoBehaviour:
   globalOBJ: {fileID: 0}
   explosion: {fileID: 7525396874586953241, guid: 62454c9020e7f403da74f146722dbcb5,
     type: 3}
+  laser: {fileID: 8300000, guid: 0ce25972fb8624c55ab549d7e164576b, type: 3}
+  alien_kill: {fileID: 8300000, guid: b644cc69c07b947888f91fee517e9746, type: 3}
 --- !u!54 &864042945779367370
 Rigidbody:
   m_ObjectHideFlags: 0

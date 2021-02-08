@@ -127,8 +127,7 @@ MonoBehaviour:
   thrust: {x: 0, y: 0, z: 0}
   heading: {x: 0, y: 0, z: 0, w: 0}
   rewardIdx: 1
-  rewardDuration: 5
-  active: 0
   sparkle: {fileID: 3023245845039221747, guid: 773634e8b048f4c6db7dc9f1585391ce, type: 3}
   shipOBJ: {fileID: 0}
   globalOBJ: {fileID: 0}
+  getItem: {fileID: 8300000, guid: 4a7ac07a157704c0eb313a04ebd78c5e, type: 3}

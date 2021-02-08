@@ -10,6 +10,7 @@ public class RewardScript : MonoBehaviour
         public GameObject sparkle; // reward sparkle
         public GameObject shipOBJ; // ship object
         public GameObject globalOBJ; // ship object
+        public AudioClip getItem;
     // Start is called before the first frame update
     void Start()
     {
@@ -73,6 +74,7 @@ public class RewardScript : MonoBehaviour
                 default:
                     break;
             }
+            AudioSource.PlayClipAtPoint(getItem, gameObject.transform.position);
             Instantiate(sparkle, spawnPos, Quaternion.identity);
             Destroy(gameObject);
         }
