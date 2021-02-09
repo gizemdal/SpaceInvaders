@@ -12,11 +12,10 @@ public class UFO : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        score = Random.Range(40, 51); // Randomize score
+        score = Random.Range(80, 101); // Randomize score
         xSpeed = 0.045f;
         globalOBJ = GameObject.FindWithTag("Global");
         GetComponent<AudioSource>().Play();
-        GetComponent<AudioSource>().loop = true;
     }
 
     // Update is called once per frame

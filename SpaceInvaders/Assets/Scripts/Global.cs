@@ -17,11 +17,12 @@ public class Global : MonoBehaviour
     public static float alienTimer = 1f; // timer for alien attack
     public static float UFOTimer = 20; // timer for UFO spawn
     public static int playerScore = 0; // Keep track of player score
+    public static int currentLevel = 1; // current level of the player
     public static bool isGameOver = false; // has the player lost all their lives?
     public static bool isPause = false; // is the timer paused?
     public static int shipStreak; // keep track of consecutive target hits
     public static bool isRewardActive = false; // is any reward active?
-    public static float rewardDuration = 5; // how long the reward lasts
+    public static float rewardDuration = 10; // how long the reward lasts
     public static int activeReward; // index of active reward
     public static List<GameObject> aliens = new List<GameObject>();
     public static List<GameObject> shields = new List<GameObject>();
@@ -76,6 +77,7 @@ public class Global : MonoBehaviour
         Global.UFOTimer = 20;
         Global.closestRow = 0;
         Global.playerScore = 0; // Reset score
+        Global.currentLevel = 1; // Reset level count
         Global.shipStreak = 0;
     }
 
@@ -109,7 +111,7 @@ public class Global : MonoBehaviour
         {
             Destroy(currentUFO);
         }
-        alienSpeed = new Vector2(0.01f, 0.1f); // initial speed
+        alienSpeed = new Vector2(0.01f + (Global.currentLevel - 1) * 0.05f, 0.1f + (Global.currentLevel - 1) * 0.1f); // initial speed
         // Reset ship state
         ship.GetComponent<Ship>().ResetState();
         // Create the aliens
@@ -215,18 +217,23 @@ public class Global : MonoBehaviour
             Global.numAliens = 55;
             Global.numShields = 4;
             Alien.timer = 1;
+            // Bump the level by 1
+            Global.currentLevel++;
+            // Give the player one extra life
+            GameObject reward = Instantiate(extraLife, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+            reward.GetComponent<RewardScript>().rewardIdx = 0;
             Start();
             return;
         }
         // Update alien speed if needed
-        if (Global.numAliens % 8 == 0)
+        if (Global.numAliens % 11 == 0)
         {
             alienSpeed.x += 0.01f;
             alienSpeed.y += 0.05f;
             Alien.timer /= 1.5f;
             // Speed the ship as well
             ship.GetComponent<Ship>().moveAcceleration += 0.05f;
-            //ship.GetComponent<Ship>().bulletSpeed += 50f;
+            ship.GetComponent<Ship>().bulletSpeed += 50f;
         }
     }
 
@@ -240,7 +247,7 @@ public class Global : MonoBehaviour
         if (ship.GetComponent<Ship>().isResurrecting)
         {
             Global.isRewardActive = false;
-            Global.rewardDuration = 5;
+            Global.rewardDuration = 10;
             fasterBullet.gameObject.SetActive(false);
             fasterBullet.enabled = false;
             fasterBuffer.gameObject.SetActive(false);
@@ -348,19 +355,22 @@ public class Global : MonoBehaviour
                         break;
                     case 2:
                         // Generate faster bullet reload
-                        ship.GetComponent<Ship>().bulletBuffer /= 0.35f;
+                        ship.GetComponent<Ship>().bulletBuffer = 0.5f;
                         fasterBuffer.gameObject.SetActive(false);
                         fasterBuffer.enabled = false;
                         break;
                     default:
                         break;
                 }
-            Global.rewardDuration = 5;
+            Global.rewardDuration = 10;
             }
         } else
         {
             // Game is over - display Game Over title and see if player wants to continue playing
             if (isGameOver) {
+                // Pass the data to DataScript
+                DataScript.setScore(Global.playerScore);
+                DataScript.setLevel(Global.currentLevel);
                 // Reset the game state
                 Global.ResetGameStats();
                 Global.isPause = false;

@@ -60,7 +60,7 @@ public class ShipBullet : MonoBehaviour
             Instantiate(explosion, spawnPos, Quaternion.identity);
             // Hit the target successfully - increase streak count
             Global.shipStreak++;
-            if (Global.shipStreak % 10 == 0) {
+            if (Global.shipStreak % 10 == 0 && !Global.isRewardActive) {
                 // generate a reward
                 globalOBJ.GetComponent<Global>().generateReward(spawnPos);
             }
@@ -82,11 +82,12 @@ public class ShipBullet : MonoBehaviour
         else if (collider.CompareTag("UFO"))
         {
             Vector3 spawnPos = collider.gameObject.GetComponent<UFO>().transform.position;
+            AudioSource.PlayClipAtPoint(alien_kill, gameObject.transform.position);
             collider.gameObject.GetComponent<UFO>().Die();
             Instantiate(explosion, spawnPos, Quaternion.identity);
             // Hit the target successfully - increase streak count
             Global.shipStreak++;
-            if (Global.shipStreak % 10 == 0) {
+            if (Global.shipStreak % 10 == 0 && !Global.isRewardActive) {
                 // generate a reward
                 globalOBJ.GetComponent<Global>().generateReward(spawnPos);
             }

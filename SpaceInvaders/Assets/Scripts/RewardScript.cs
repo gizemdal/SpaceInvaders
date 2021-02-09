@@ -66,7 +66,7 @@ public class RewardScript : MonoBehaviour
                     break;
                 case 2:
                     // Generate faster bullet reload
-                    shipOBJ.GetComponent<Ship>().bulletBuffer *= 0.35f;
+                    shipOBJ.GetComponent<Ship>().bulletBuffer = 0.05f;
                     globalOBJ.GetComponent<Global>().fasterBuffer.gameObject.SetActive(true);
                     globalOBJ.GetComponent<Global>().fasterBuffer.enabled = true;
                     Global.isRewardActive = true;

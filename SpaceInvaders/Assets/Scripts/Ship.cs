@@ -25,9 +25,9 @@ public class Ship : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        moveAcceleration = 0.1f;
+        moveAcceleration = 0.2f;
         bulletSpeed = 400f;
-        bulletBuffer = 1f;
+        bulletBuffer = 0.5f;
         hasShot = false;
         isResurrecting = false;
         gameObject.GetComponent<Renderer>().enabled = true;
@@ -39,7 +39,7 @@ public class Ship : MonoBehaviour
             if (Input.GetAxisRaw("Horizontal") > 0)
             {
                 Vector3 updatedPosition = gameObject.transform.position;
-                if (updatedPosition.x < (globalOBJ.GetComponent<Global>().maxPos.x - 1f))
+                if (updatedPosition.x <= (7.5f))
                 {
                     updatedPosition.x += moveAcceleration;
                     gameObject.transform.position = updatedPosition;
@@ -48,7 +48,7 @@ public class Ship : MonoBehaviour
             else if (Input.GetAxisRaw("Horizontal") < 0)
             {
                 Vector3 updatedPosition = gameObject.transform.position;
-                if (updatedPosition.x > (-globalOBJ.GetComponent<Global>().maxPos.x + 1f))
+                if (updatedPosition.x >= (-7.5f))
                 {
                     updatedPosition.x -= moveAcceleration;
                     gameObject.transform.position = updatedPosition;
@@ -63,7 +63,7 @@ public class Ship : MonoBehaviour
         gameObject.transform.position = new Vector3(0, 0, -7);
         // Delete the particles
         Destroy(currExplosion);
-        // Delete existing bullets and debris in the game
+        // Delete existing bullets, debris and rewards in the game
         GameObject[] allAlienBullets = GameObject.FindGameObjectsWithTag("AlienBullet");
         foreach (GameObject alienB in allAlienBullets) {
             Destroy(alienB);
@@ -71,6 +71,10 @@ public class Ship : MonoBehaviour
         GameObject[] allDebris = GameObject.FindGameObjectsWithTag("Debris");
         foreach (GameObject deb in allDebris) {
             Destroy(deb);
+        }
+        GameObject[] allRewards = GameObject.FindGameObjectsWithTag("Resource");
+        foreach (GameObject rew in allRewards) {
+            Destroy(rew);
         }
         // Enable ship render
         gameObject.GetComponent<Renderer>().enabled = true;
@@ -94,7 +98,7 @@ public class Ship : MonoBehaviour
         gameObject.layer = 0;
         Global.shipStreak = 0; // Kill ship streak
         bulletSpeed = 400f;
-        bulletBuffer = 1f;
+        bulletBuffer = 0.5f;
         Global.isRewardActive = false;
         Global.rewardDuration = 5;
         // Create explosion
@@ -134,7 +138,7 @@ public class Ship : MonoBehaviour
                     {
                         // Ship is ready for sending bullets
                         hasShot = false;
-                        bulletBuffer = 1f;
+                        bulletBuffer = 0.5f;
                     }
                 }
 
