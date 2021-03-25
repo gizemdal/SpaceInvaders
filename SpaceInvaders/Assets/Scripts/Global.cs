@@ -23,7 +23,7 @@ public class Global : MonoBehaviour
     public static int shipStreak; // keep track of consecutive target hits
     public static bool isRewardActive = false; // is any reward active?
     public static float rewardDuration = 10; // how long the reward lasts
-    public static int activeReward; // index of active reward
+    public static int activeReward = -1; // index of active reward
     public static List<GameObject> aliens = new List<GameObject>();
     public static List<GameObject> shields = new List<GameObject>();
 
@@ -103,7 +103,6 @@ public class Global : MonoBehaviour
             reward.GetComponent<RewardScript>().rewardIdx = rewardIdx;
         }
     }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -111,7 +110,7 @@ public class Global : MonoBehaviour
         {
             Destroy(currentUFO);
         }
-        alienSpeed = new Vector2(0.01f + (Global.currentLevel - 1) * 0.05f, 0.1f + (Global.currentLevel - 1) * 0.1f); // initial speed
+        alienSpeed = new Vector2(0.01f + (Global.currentLevel - 1) * 0.02f, 0.1f + (Global.currentLevel - 1) * 0.1f); // initial speed
         // Reset ship state
         ship.GetComponent<Ship>().ResetState();
         // Create the aliens
@@ -362,7 +361,8 @@ public class Global : MonoBehaviour
                     default:
                         break;
                 }
-            Global.rewardDuration = 10;
+                Global.activeReward = -1; // reset index
+                Global.rewardDuration = 10;
             }
         } else
         {

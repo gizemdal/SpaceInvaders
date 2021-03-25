@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Ship : MonoBehaviour
 {
     public static float resurrectTime = 3;
     public static float secondCount = 1;
     public static int remainingLives = 3;
+
     /*
      * Some public variables to alter ship's movement
      */
@@ -16,26 +18,35 @@ public class Ship : MonoBehaviour
     public GameObject globalOBJ; // global game object
     public GameObject explosion; // explosion debris
     public GameObject currExplosion;
-    public float bulletBuffer; // bullet buffer time (1 second)
+    public float bulletBuffer; // bullet buffer time (0.5 seconds)
     public bool hasShot; // has the ship sent a bullet?
     public bool isResurrecting; // is the ship currently resurrecting?
 
-    public AudioClip ship_kill;
+    public AudioClip ship_kill; // audio clip for ship explosion
+
+    public float prevMouseX; // previously recorded mouse X position
+    public bool recording; // are we recording mouse movement?
+    public float pressTime; // how long did the player hold the button?
+    public float holdTime; // how long was the button held?
 
     // Start is called before the first frame update
     void Start()
     {
-        moveAcceleration = 0.2f;
+        moveAcceleration = 0.06f;
         bulletSpeed = 400f;
         bulletBuffer = 0.5f;
         hasShot = false;
         isResurrecting = false;
         gameObject.GetComponent<Renderer>().enabled = true;
+        recording = false;
+        pressTime = 0f;
+        holdTime = 0f;
     }
 
     void FixedUpdate()
     {
         if (!Global.isPause) {
+            // Left/Right keys are recognized for the PC/Mac versions
             if (Input.GetAxisRaw("Horizontal") > 0)
             {
                 Vector3 updatedPosition = gameObject.transform.position;
@@ -138,7 +149,11 @@ public class Ship : MonoBehaviour
                     {
                         // Ship is ready for sending bullets
                         hasShot = false;
-                        bulletBuffer = 0.5f;
+                        if (Global.activeReward == 2) {
+                            bulletBuffer = 0.05f;
+                        } else {
+                            bulletBuffer = 0.5f;
+                        }
                     }
                 }
 
@@ -159,6 +174,42 @@ public class Ship : MonoBehaviour
                         }
                         hasShot = true;
                     }
+                    holdTime = 0;
+                }
+
+                // Check for primary mouse button hold/release
+                if (Input.GetMouseButtonDown(0)) {
+                    // Player is pressing - record the current position
+                    recording = true;
+                    prevMouseX = Input.mousePosition.x;
+                    pressTime = Time.time;
+                }
+                if (Input.GetMouseButtonUp(0)) {
+                    // Player released the mouse - no need to track movement
+                    recording = false;
+                    holdTime = Time.time - pressTime;
+                    pressTime = 0f;
+                }
+                if (recording) {
+                    // Capture the difference between each frame
+                    float deltaX = Input.mousePosition.x - prevMouseX;
+                    if (Mathf.Abs(deltaX) < 0.001f) return;
+                    if (deltaX > 0) {
+                        Vector3 updatedPosition = gameObject.transform.position;
+                        if (updatedPosition.x <= (7.5f))
+                        {
+                            updatedPosition.x += (deltaX * moveAcceleration);
+                            gameObject.transform.position = updatedPosition;
+                        }
+                    } else if (deltaX < 0) {
+                        Vector3 updatedPosition = gameObject.transform.position;
+                        if (updatedPosition.x >= (-7.5f))
+                        {
+                            updatedPosition.x += (deltaX * moveAcceleration);
+                            gameObject.transform.position = updatedPosition;
+                        }
+                    }
+                    prevMouseX = Input.mousePosition.x;
                 }
             }
             else
