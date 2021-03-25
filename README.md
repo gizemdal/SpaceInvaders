@@ -1,13 +1,19 @@
-# Space Invaders: Reconstructed
+# Space Invaders: Deconstructed
 
 <img src="imgs/readme.gif" width = 700>
 
 **Name:** Gizem Dal
   - [Portfolio](https://www.gizemdal.com/), [Linkedin](https://www.linkedin.com/in/gizemdal/)
 
+*I do not own the game logo or the sound effects used in this game project.*
+
 ### Player Goals & Objectives
 
 This is a Unity 3D game project that is based on the arcade game [Space Invaders](https://www.youtube.com/watch?v=MU4psw3ccUI). The goal of Space Invaders is to kill the attacking aliens without getting hit, by controlling your spaceship with left and right keys and shooting at them.
+
+Main Menu Scene | Game Over Scene
+:---: | :---:
+<img src="imgs/mainscreen.png" width = 300> | <img src="imgs/gameover.png" width = 300>
 
 ### Gameplay Rules
 
