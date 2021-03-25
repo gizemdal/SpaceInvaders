@@ -1,6 +1,6 @@
 # Space Invaders: Reconstructed
 
-<img src="imgs/readme.gif" width = 400>
+<img src="imgs/readme.gif" width = 700>
 
 **Name:** Gizem Dal
   - [Portfolio](https://www.gizemdal.com/), [Linkedin](https://www.linkedin.com/in/gizemdal/)
