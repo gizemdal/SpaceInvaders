@@ -4,6 +4,7 @@
 
 **Name:** Gizem Dal
   - [Portfolio](https://www.gizemdal.com/), [Linkedin](https://www.linkedin.com/in/gizemdal/)
+**Where to Play:** A MacOS executable is included under Mac_Exe
 
 *I do not own the game logo or the sound effects used in this game project.*
 
