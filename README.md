@@ -1,6 +1,6 @@
 # Space Invaders: Deconstructed
 
-<img src="imgs/readme.gif" width = 700>
+<img src="imgs/space_invaders.png" width = 400>  <img src="imgs/readme.gif" width = 500>
 
 **Name:** Gizem Dal
   - [Portfolio](https://www.gizemdal.com/), [Linkedin](https://www.linkedin.com/in/gizemdal/)
