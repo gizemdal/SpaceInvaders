@@ -7,7 +7,7 @@
 
 **Where to Play:** A MacOS executable is included under Mac_Exe
 
-*I do not own the game logo or the sound effects used in this game project.*
+*I do not own the visual assets or the sound effects used in this game project.*
 
 ### Player Goals & Objectives
 
